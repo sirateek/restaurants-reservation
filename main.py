@@ -16,6 +16,11 @@ collection = db["reservation"]
 
 app = FastAPI()
 
+def check_table_availability(time: int, table: int) -> bool:
+    result = collection.find({"time": time, "table_number": table})
+    list_cursor = list(result)
+    return not len(list_cursor) > 0
+
 # TODO complete all endpoint.
 @app.get("/reservation/by-name/{name}")
 def get_reservation_by_name(name:str):
@@ -27,10 +32,8 @@ def get_reservation_by_table(table: int):
 
 @app.post("/reservation")
 def reserve(reservation : Reservation):
-    # Check if the time is available for the current table
-    result = collection.find({"time": reservation.time, "table_number": reservation.table_number})
-    list_cursor = list(result)
-    if len(list_cursor) > 0:
+
+    if not check_table_availability(reservation.time, reservation.table_number):
         # Incase that the reservation is found based on the condition above
         raise HTTPException(status_code=400, detail={
             "message": "That table isn't available at that time"
