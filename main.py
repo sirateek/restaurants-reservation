@@ -67,23 +67,23 @@ def reserve(reservation : Reservation):
 @app.put("/reservation/update/")
 def update_reservation(reservation: Reservation):
     query_find = {
-        "name": reservation.name ,
+        "name": reservation.name
         }
-    check = reservation.find(query_find)
+    check = collection.find(query_find)
     list_check = list(check)
-    if len(list_check)>0:
-        if check_table_availability(reservation.time,reservation.table_number):
-            collection.update_many({"name":reservation.name},{"$set":{"table":reservation.table_number,"time":reservation.time}}) 
-    raise HTTPException(400,f"Couldn't find name:{reservation.name}")
-            
+    if len(list_check)==0:
+        raise HTTPException(400,f"Couldn't find name:{reservation.name}")
 
-     
-
-
-
+    if not check_table_availability(reservation.time,reservation.table_number):
+        raise HTTPException(400,f"Table not available")
+    collection.update_many({"name":reservation.name},{"$set":{"table_number":reservation.table_number,"time":reservation.time}}) 
+    return {
+        "message": "success"
+    }
+    
+        
 @app.delete("/reservation/delete/{name}/{table_number}")
 def cancel_reservation(name: str, table_number : int):
-    pass
     query = {
         "name":name , 
         "table_number":table_number
