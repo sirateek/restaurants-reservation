@@ -1,3 +1,4 @@
+from unicodedata import name
 from fastapi import FastAPI
 from pymongo import MongoClient
 from pydantic import BaseModel
@@ -10,10 +11,10 @@ class Reservation(BaseModel):
 client = MongoClient('mongodb://localhost', 27017)
 
 # TODO fill in database name
-db = client["<put your database name>"]
+db = client["restaurant"]
 
 # TODO fill in collection name
-collection = db["<put your collection name>"]
+collection = db["reservatoin"]
 
 app = FastAPI()
 
@@ -33,9 +34,14 @@ def reserve(reservation : Reservation):
 
 @app.put("/reservation/update/")
 def update_reservation(reservation: Reservation):
-    pass
+    pass 
 
 @app.delete("/reservation/delete/{name}/{table_number}")
 def cancel_reservation(name: str, table_number : int):
-    pass
-
+    query = {
+        "name":name , 
+        "table_number":table_number
+         }
+    reservation.delete_one(query)
+    return {}
+    
