@@ -18,7 +18,7 @@ collection = db["reservation"]
 db = client["restaurant"]
 
 # TODO fill in collection name
-collection = db["reservatoin"]
+collection = db["reservation"]
 
 app = FastAPI()
 
@@ -31,7 +31,7 @@ def check_table_availability(time: int, table: int) -> bool:
 @app.get("/reservation/by-name/{name}")
 def get_reservation_by_name(name:str):
     query={"name": name }
-    query_result=menu_collection.find(query)
+    query_result=collection.find(query)
     for n in query_result:
         print(n)
     return {
@@ -41,7 +41,7 @@ def get_reservation_by_name(name:str):
 @app.get("reservation/by-table/{table}")
 def get_reservation_by_table(table: int):
     query={"table_number":table}
-    query_result=menu_collection.find(query)
+    query_result=collection.find(query)
     for n in query_result:
         print(n)
     return {
@@ -75,9 +75,7 @@ def update_reservation(reservation: Reservation):
 
 @app.delete("/reservation/delete/{name}/{table_number}")
 def cancel_reservation(name: str, table_number : int):
-<<<<<<< HEAD
     pass
-=======
     query = {
         "name":name , 
         "table_number":table_number
@@ -85,4 +83,3 @@ def cancel_reservation(name: str, table_number : int):
     reservation.delete_one(query)
     return {}
     
->>>>>>> 02e1c89ea784f6a95a47549b9182ac3916fcc385
