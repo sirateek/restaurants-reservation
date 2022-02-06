@@ -1,0 +1,1 @@
+/reservation/by-name/{name}
