@@ -9,11 +9,9 @@ class Reservation(BaseModel):
     
 client = MongoClient('mongodb://localhost', 27017)
 
-# TODO fill in database name
-db = client["<put your database name>"]
+db = client["restaurant"]
 
-# TODO fill in collection name
-collection = db["<put your collection name>"]
+collection = db["reservation"]
 
 app = FastAPI()
 
