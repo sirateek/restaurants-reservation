@@ -1,4 +1,3 @@
-import re
 from unicodedata import name
 from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
@@ -67,7 +66,20 @@ def reserve(reservation : Reservation):
 
 @app.put("/reservation/update/")
 def update_reservation(reservation: Reservation):
-    pass 
+    query_find = {
+        "name": reservation.name ,
+        }
+    check = reservation.find(query_find)
+    list_check = list(check)
+    if len(list_check)>0:
+        if check_table_availability(reservation.time,reservation.table_number):
+            collection.update_many({"name":reservation.name},{"$set":{"table":reservation.table_number,"time":reservation.time}}) 
+    raise HTTPException(400,f"Couldn't find name:{reservation.name}")
+            
+
+     
+
+
 
 @app.delete("/reservation/delete/{name}/{table_number}")
 def cancel_reservation(name: str, table_number : int):
@@ -76,6 +88,6 @@ def cancel_reservation(name: str, table_number : int):
         "name":name , 
         "table_number":table_number
          }
-    reservation.delete_one(query)
+    collection.delete_one(query)
     return {}
     
