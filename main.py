@@ -14,11 +14,6 @@ client = MongoClient('mongodb://localhost', 27017)
 
 db = client["restaurant"]
 collection = db["reservation"]
-# TODO fill in database name
-db = client["restaurant"]
-
-# TODO fill in collection name
-collection = db["reservation"]
 
 app = FastAPI()
 
@@ -27,25 +22,26 @@ def check_table_availability(time: int, table: int) -> bool:
     list_cursor = list(result)
     return not len(list_cursor) > 0
 
-# TODO complete all endpoint.
 @app.get("/reservation/by-name/{name}")
 def get_reservation_by_name(name:str):
     query={"name": name }
-    query_result=collection.find(query)
+    query_result=collection.find(query, {"_id": 0})
+    result = []
     for n in query_result:
-        print(n)
+        result.append(n)
     return {
-        "result": "success"
+        "result": result
     }
 
-@app.get("reservation/by-table/{table}")
+@app.get("/reservation/by-table/{table}")
 def get_reservation_by_table(table: int):
     query={"table_number":table}
-    query_result=collection.find(query)
+    query_result=collection.find(query, {"_id": 0})
+    result = []
     for n in query_result:
-        print(n)
+        result.append(n)
     return {
-        "result": "success"
+        "result": result
     }
 
 
